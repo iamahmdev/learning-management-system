@@ -1196,3 +1196,110 @@ Generate all files following this exact structure for all 60 modules.
 **Version**: 3.0.0 FINAL  
 **Date**: 2026-09-05  
 **Status**: ✅ COMPLETE - 60/60 MODULES
+
+---
+
+# 🎯 ALTERNATIVE: 30 CORE MODULE BACKEND PLAN
+
+## FOR CLASS 1-12 SCHOOL SYSTEM ONLY
+
+If you want a **simplified Class 1-12 school system** instead of the full 60-module enterprise system, use these **30 CORE modules** from the existing backend:
+
+### ✅ CORE 30 MODULES (USE EXISTING BACKEND)
+
+**Strategy**: Keep these 30 core modules, skip the remaining 30 advanced/enterprise modules
+
+#### Core Administration (6 modules)
+1. **Authentication & User** - `user.model.js`
+2. **School Management** - `school.model.js`
+3. **Staff Management** - `staff.model.js`
+4. **Inventory & Assets** - `inventory.model.js`
+5. **Reports & Analytics** - `report.model.js`, `analytics.model.js`, `dashboard.model.js`
+6. **Certificates** - `certificate.model.js`
+
+#### Student Management (4 modules)
+7. **Student** - `student.model.js`
+8. **Parent** - `parent.model.js`, `parent-student-relationship.model.js`
+9. **Admission** - `admission.model.js`
+10. **Discipline** - `discipline.model.js`
+
+#### Academic Management (8 modules)
+11. **Class** (1-12) - `class.model.js`
+12. **Section** (A,B,C) - `section.model.js`
+13. **Subject** - `subject.model.js`, `subjectAssignment.model.js`
+14. **Academic Session** - `academicYear.model.js`, `academicCalendar.model.js`
+15. **Teacher** - `teacher.model.js`
+16. **Timetable** - `timetable.model.js`
+17. **Homework** - `homework.model.js`, `homeworkSubmission.model.js`
+18. **Attendance** - `attendance.model.js`
+
+#### Examination (2 modules)
+19. **Exam** - `exam.model.js`
+20. **Result** - `result.model.js`, `gradeSystem.model.js`
+
+#### Financial (3 modules)
+21. **Fee** - `fee.model.js`, `feeStructure.model.js`
+22. **Invoice** - `invoice.model.js`
+23. **Leave** - `leave.model.js`
+
+#### Facilities (2 modules)
+24. **Library** - `library.model.js`, `bookIssue.model.js`
+25. **Transport** - `transport.model.js`, `transportRoute.model.js`
+
+#### Communication (3 modules)
+26. **Notices** - `communication.model.js`
+27. **Events** - `event.model.js`
+28. **Notifications** - `notification.model.js`
+
+#### Portals (2 modules)
+29. **Parent Portal** - `parentPortal.model.js`
+30. **Student/Teacher Portal** - `studentPortal.model.js`, `teacherPortal.model.js`
+
+### ⏸️ SKIP THESE ADVANCED MODULES (for Class 1-12 system)
+
+- ❌ Payroll, Budget, Scholarships
+- ❌ Hostel, Canteen
+- ❌ Alumni Management
+- ❌ Biometric, Vehicle GPS
+- ❌ Online Classes, Question Bank
+- ❌ Health Records, Visitor Management
+- ❌ ID Cards, Expenses
+- ❌ Feedback, Complaints
+- ❌ Audit Logs, Mobile App API
+- ❌ Webhooks, Advanced Integrations
+
+### 🎯 FRONTEND APPROACH FOR 30 MODULES
+
+Use the same frontend pattern but with only 30 modules:
+
+```typescript
+// Remove these from endpoints.ts:
+- payroll
+- budgets
+- scholarships
+- hostels
+- hostelRooms
+- canteen
+- alumni
+- biometricAttendance
+- vehicleTracking
+- onlineClasses
+- questionBank
+- healthRecords
+- visitors
+- idCards
+- expenses
+- feedback
+- complaints
+- auditLogs
+- mobileApp
+- webhooks
+```
+
+Keep the same:
+- Core setup files (api-client, query-client, providers)
+- 6-file pattern per module
+- TypeScript interfaces
+- TanStack Query integration
+
+**Result**: Lighter, faster, Class 1-12 focused system
