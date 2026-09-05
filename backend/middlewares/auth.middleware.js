@@ -7,10 +7,13 @@ import User from "../models/user.model.js";
 
 export const isAuthenticated = async (req, res, next) => {
   try {
-    // Get token from cookie
-    const token = req.cookies?.token;
+    const cookieToken = req.cookies?.token;
+    const authHeader = req.headers.authorization;
+    const tokenFromHeader = authHeader?.startsWith("Bearer ")
+      ? authHeader.replace("Bearer ", "").trim()
+      : null;
+    const token = cookieToken || tokenFromHeader;
 
-    // Check token
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -18,7 +21,6 @@ export const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    // Check JWT secret
     if (!process.env.JWT_SECRET_KEY) {
       console.error("JWT_SECRET_KEY is not configured");
 
@@ -28,26 +30,29 @@ export const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    // Verify token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET_KEY
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decoded?._id ?? decoded?.id;
 
-    // Make sure token contains user ID
-    if (!decoded?._id) {
+    if (!userId) {
       return res.status(401).json({
         success: false,
         message: "Invalid authentication token",
       });
     }
 
-    // Find authenticated user
-    const user = await User.findById(decoded._id).select(
-      "-password"
-    );
+    if (userId === "admin" || decoded?.role === "admin") {
+      req.user = {
+        _id: userId,
+        id: userId,
+        role: "admin",
+        email: process.env.ADMIN_EMAIL || "admin@school.com",
+      };
 
-    // Check user
+      return next();
+    }
+
+    const user = await User.findById(userId).select("-password");
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -55,10 +60,13 @@ export const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    // Store authenticated user
-    req.user = user;
+    req.user = {
+      ...user.toObject(),
+      _id: user._id,
+      id: user._id.toString(),
+      role: user.role,
+    };
 
-    // Continue request
     next();
   } catch (error) {
     console.error("Authentication Error:", error.message);

@@ -115,10 +115,7 @@ export const registerUser = async (req, res) => {
     });
 
     // Generate JWT
-    const token = generateToken({
-      id: user._id.toString(),
-      role: user.role,
-    });
+    const token = generateToken(user._id.toString(), user.role);
 
     // Store JWT
     res.cookie("token", token, getCookieOptions());
@@ -199,10 +196,7 @@ export const loginUser = async (req, res) => {
     }
 
     // Generate JWT
-    const token = generateToken({
-      id: user._id.toString(),
-      role: user.role,
-    });
+    const token = generateToken(user._id.toString(), user.role);
 
     // Store JWT
     res.cookie("token", token, getCookieOptions());
@@ -269,10 +263,7 @@ export const loginAdmin = async (req, res) => {
     }
 
     // Generate admin token
-    const token = generateToken({
-      id: "admin",
-      role: "admin",
-    });
+    const token = generateToken("admin", "admin");
 
     // Store JWT
     res.cookie("token", token, getCookieOptions());

@@ -54,6 +54,12 @@ router.post(
   loginAdmin
 );
 
+router.post(
+  "/admin-login",
+  validateAdminLogin,
+  loginAdmin
+);
+
 // Logout User / Admin
 router.post(
   "/logout",

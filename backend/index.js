@@ -27,6 +27,8 @@ import bookIssueRoutes from "./routes/bookIssue.routes.js";
 import staffRoutes from "./routes/staff.routes.js";
 import eventRoutes from "./routes/event.routes.js";
 import leaveRoutes from "./routes/leave.routes.js";
+import feeRoutes from "./routes/fee.routes.js";
+import feePaymentRoutes from "./routes/feePayment.routes.js";
 
 // Load environment variables
 dotenv.config();
@@ -39,7 +41,9 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(",").map((url) => url.trim())
+      : true,
     credentials: true,
   })
 );
@@ -74,6 +78,8 @@ app.use("/api/book-issues", bookIssueRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/leaves", leaveRoutes);
+app.use("/api/fees", feeRoutes);
+app.use("/api/fee-payments", feePaymentRoutes);
 
 // ----------------------------------------------------
 // Health Check
