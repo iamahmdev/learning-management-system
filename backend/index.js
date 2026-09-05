@@ -17,6 +17,7 @@ import attendanceRoutes from "./routes/attendance.routes.js";
 import examRoutes from "./routes/exam.routes.js";
 import resultRoutes from "./routes/result.routes.js";
 import feeRoutes from "./routes/fee.routes.js";
+import feePaymentRoutes from "./routes/feePayment.routes.js";
 import payrollRoutes from "./routes/payroll.routes.js";
 import timetableRoutes from "./routes/timetable.routes.js";
 import transportRoutes from "./routes/transport.routes.js";
@@ -57,6 +58,11 @@ import analyticsRoutes from "./routes/analytics.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
 import mobileAppRoutes from "./routes/mobileApp.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import feeStructureRoutes from "./routes/feeStructure.routes.js";
+import subjectAssignmentRoutes from "./routes/subjectAssignment.routes.js";
+import transportRouteRoutes from "./routes/transportRoute.routes.js";
+import gradeSystemRoutes from "./routes/gradeSystem.routes.js";
+import academicCalendarRoutes from "./routes/academicCalendar.routes.js";
 dotenv.config();
 const app = express();
 app.use(
@@ -236,6 +242,21 @@ app.use("/api/mobile-app", mobileAppRoutes);
 
 // Dashboard Route
 app.use("/api/dashboards", dashboardRoutes);
+
+// Fee Structure Route
+app.use("/api/fee-structures", feeStructureRoutes);
+
+// Subject Assignment Route
+app.use("/api/subject-assignments", subjectAssignmentRoutes);
+
+// Transport Route Management Route
+app.use("/api/transport-routes", transportRouteRoutes);
+
+// Grade System Route
+app.use("/api/grade-systems", gradeSystemRoutes);
+
+// Academic Calendar Route
+app.use("/api/academic-calendar", academicCalendarRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
