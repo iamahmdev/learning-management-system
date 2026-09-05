@@ -61,7 +61,9 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(",").map((url) => url.trim())
+      : true,
     credentials: true,
   })
 );
@@ -130,6 +132,8 @@ app.use("/api/homework", homeworkRoutes);
 
 // Leave Management Route
 app.use("/api/leaves", leaveRoutes);
+app.use("/api/fees", feeRoutes);
+app.use("/api/fee-payments", feePaymentRoutes);
 
 // Staff Management Route
 app.use("/api/staff", staffRoutes);
