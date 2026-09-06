@@ -44,6 +44,24 @@ export const getAllNotifications = async (req, res) => {
   }
 };
 
+export const getNotificationById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ success: false, message: "Invalid Notification ID" });
+
+    const notification = await Notification.findById(id)
+      .populate({ path: "schoolId", select: "name code" })
+      .populate({ path: "userId", select: "name email role" });
+
+    if (!notification) return res.status(404).json({ success: false, message: "Notification not found" });
+
+    return res.status(200).json({ success: true, message: "Notification fetched successfully", notification });
+  } catch (error) {
+    console.error("Get Notification By ID Error:", error);
+    return res.status(500).json({ success: false, message: "Failed to fetch notification", error: error.message });
+  }
+};
+
 export const markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
