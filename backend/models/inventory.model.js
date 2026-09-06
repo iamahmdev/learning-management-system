@@ -118,9 +118,8 @@ inventorySchema.index(
 );
 
 // Calculate total value before save
-inventorySchema.pre("save", function (next) {
+inventorySchema.pre("save", function () {
   this.totalValue = this.quantity * this.unitPrice;
-  next();
 });
 
 const Inventory = mongoose.model("Inventory", inventorySchema);

@@ -83,7 +83,10 @@ const librarySchema = new mongoose.Schema(
     publicationYear: {
       type: Number,
       min: [1800, "Publication year must be after 1800"],
-      max: [new Date().getFullYear() + 1, "Publication year cannot be in the future"],
+      max: [
+        new Date().getFullYear() + 1,
+        "Publication year cannot be in the future",
+      ],
     },
 
     pages: {
@@ -159,16 +162,13 @@ librarySchema.index(
   }
 );
 
-// Validation: availableCopies + issuedCopies should equal totalCopies
-librarySchema.pre("save", function (next) {
+// Validation: availableCopies + issuedCopies must equal totalCopies
+librarySchema.pre("save", function () {
   if (this.availableCopies + this.issuedCopies !== this.totalCopies) {
-    return next(
-      new Error(
-        "Available copies + Issued copies must equal Total copies"
-      )
+    throw new Error(
+      "Available copies + Issued copies must equal Total copies"
     );
   }
-  next();
 });
 
 const Library = mongoose.model("Library", librarySchema);

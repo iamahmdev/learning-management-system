@@ -82,7 +82,14 @@ const eventSchema = new mongoose.Schema(
 
     targetAudience: {
       type: String,
-      enum: ["all", "students", "parents", "teachers", "staff", "specific"],
+      enum: [
+        "all",
+        "students",
+        "parents",
+        "teachers",
+        "staff",
+        "specific",
+      ],
       default: "all",
     },
 
@@ -122,12 +129,14 @@ const eventSchema = new mongoose.Schema(
   }
 );
 
-// Validation: endDate must be >= startDate
-eventSchema.pre("validate", function (next) {
+// Validate that end date is not before start date
+eventSchema.pre("validate", function () {
   if (this.endDate && this.startDate && this.endDate < this.startDate) {
-    this.invalidate("endDate", "End date must be on or after start date");
+    this.invalidate(
+      "endDate",
+      "End date must be on or after start date"
+    );
   }
-  next();
 });
 
 const Event = mongoose.model("Event", eventSchema);

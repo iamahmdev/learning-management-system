@@ -6,6 +6,13 @@ import User from "../models/user.model.js";
 import generateToken from "../utils/generateToken.js";
 import { sendPasswordResetEmail } from "../utils/sendEmail.js";
 
+import {
+  registerUserValidation,
+  loginUserValidation,
+  forgotPasswordValidation,
+  resetPasswordValidation,
+} from "../validations/user.validation.js";
+
 // =====================================================
 // COOKIE OPTIONS
 // =====================================================
@@ -26,6 +33,19 @@ const cookieOptions = {
 
 export const registerUser = async (req, res) => {
   try {
+    const { error, value } = registerUserValidation.validate(
+      req.body,
+      { abortEarly: false }
+    );
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.details.map((detail) => detail.message),
+      });
+    }
+
     const {
       name,
       email,
@@ -33,7 +53,7 @@ export const registerUser = async (req, res) => {
       role,
       phone,
       profile,
-    } = req.body;
+    } = value;
 
     const existingUser = await User.findOne({ email });
 
@@ -107,14 +127,26 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { error, value } = loginUserValidation.validate(
+      req.body,
+      { abortEarly: false }
+    );
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.details.map((detail) => detail.message),
+      });
+    }
+
+    const { email, password } = value;
 
     // =====================================================
     // ADMIN LOGIN FROM .ENV
     // =====================================================
-    
+
     if (email === process.env.ADMIN_EMAIL) {
-      // Validate admin password from .env
       if (password !== process.env.ADMIN_PASSWORD) {
         return res.status(401).json({
           success: false,
@@ -122,7 +154,6 @@ export const loginUser = async (req, res) => {
         });
       }
 
-      // Generate token for admin (use a fixed ID or special identifier)
       const token = generateToken({
         id: "admin",
         role: "admin",
@@ -242,7 +273,20 @@ export const logoutUser = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { error, value } =
+      forgotPasswordValidation.validate(req.body, {
+        abortEarly: false,
+      });
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.details.map((detail) => detail.message),
+      });
+    }
+
+    const { email } = value;
 
     const user = await User.findOne({ email });
 
@@ -253,12 +297,10 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    // Generate reset token
     const resetToken = crypto
       .randomBytes(32)
       .toString("hex");
 
-    // Hash token before saving to database
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
@@ -266,17 +308,14 @@ export const forgotPassword = async (req, res) => {
 
     user.resetPasswordToken = hashedToken;
 
-    // Token expires after 15 minutes
     user.resetPasswordExpires = new Date(
       Date.now() + 15 * 60 * 1000
     );
 
     await user.save();
 
-    // Create frontend reset URL
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    // Send password reset email
     await sendPasswordResetEmail({
       to: user.email,
       name: user.name,
@@ -305,7 +344,6 @@ export const forgotPassword = async (req, res) => {
 export const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
-    const { password } = req.body;
 
     if (!token) {
       return res.status(400).json({
@@ -313,6 +351,21 @@ export const resetPassword = async (req, res) => {
         message: "Reset password token is required",
       });
     }
+
+    const { error, value } =
+      resetPasswordValidation.validate(req.body, {
+        abortEarly: false,
+      });
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.details.map((detail) => detail.message),
+      });
+    }
+
+    const { password } = value;
 
     const hashedToken = crypto
       .createHash("sha256")
@@ -367,10 +420,13 @@ export const getMyProfile = async (req, res) => {
     }
 
     // =====================================================
-    // ADMIN PROFILE (FROM .ENV)
+    // ADMIN PROFILE
     // =====================================================
 
-    if (req.user.id === "admin" && req.user.role === "admin") {
+    if (
+      req.user.id === "admin" &&
+      req.user.role === "admin"
+    ) {
       return res.status(200).json({
         success: true,
         message: "Profile fetched successfully",
@@ -387,7 +443,7 @@ export const getMyProfile = async (req, res) => {
     }
 
     // =====================================================
-    // REGULAR USER PROFILE (FROM MONGODB)
+    // REGULAR USER PROFILE
     // =====================================================
 
     if (!mongoose.Types.ObjectId.isValid(req.user.id)) {

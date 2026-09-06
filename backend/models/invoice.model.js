@@ -42,16 +42,19 @@ const invoiceSchema = new mongoose.Schema(
           required: true,
           trim: true,
         },
+
         quantity: {
           type: Number,
           required: true,
           min: 1,
         },
+
         unitPrice: {
           type: Number,
           required: true,
           min: 0,
         },
+
         totalPrice: {
           type: Number,
           required: true,
@@ -98,14 +101,28 @@ const invoiceSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["draft", "sent", "paid", "partially-paid", "overdue", "cancelled"],
+      enum: [
+        "draft",
+        "sent",
+        "paid",
+        "partially-paid",
+        "overdue",
+        "cancelled",
+      ],
       default: "draft",
       index: true,
     },
 
     paymentMethod: {
       type: String,
-      enum: ["cash", "cheque", "bank-transfer", "card", "upi", "other"],
+      enum: [
+        "cash",
+        "cheque",
+        "bank-transfer",
+        "card",
+        "upi",
+        "other",
+      ],
     },
 
     paymentDate: {
@@ -134,9 +151,9 @@ const invoiceSchema = new mongoose.Schema(
   }
 );
 
-invoiceSchema.pre("save", function (next) {
+// Automatically calculate balance amount before saving
+invoiceSchema.pre("save", function () {
   this.balanceAmount = this.totalAmount - this.paidAmount;
-  next();
 });
 
 const Invoice = mongoose.model("Invoice", invoiceSchema);

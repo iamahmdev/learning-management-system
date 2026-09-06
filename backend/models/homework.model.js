@@ -101,11 +101,13 @@ const homeworkSchema = new mongoose.Schema(
 );
 
 // Validation: dueDate must be after assignedDate
-homeworkSchema.pre("validate", function (next) {
+homeworkSchema.pre("validate", function () {
   if (this.dueDate && this.assignedDate && this.dueDate <= this.assignedDate) {
-    this.invalidate("dueDate", "Due date must be after assigned date");
+    this.invalidate(
+      "dueDate",
+      "Due date must be after assigned date"
+    );
   }
-  next();
 });
 
 const Homework = mongoose.model("Homework", homeworkSchema);

@@ -95,12 +95,14 @@ const leaveSchema = new mongoose.Schema(
   }
 );
 
-// Validation: endDate must be >= startDate
-leaveSchema.pre("validate", function (next) {
+// Validate that endDate is not before startDate
+leaveSchema.pre("validate", function () {
   if (this.endDate && this.startDate && this.endDate < this.startDate) {
-    this.invalidate("endDate", "End date must be on or after start date");
+    this.invalidate(
+      "endDate",
+      "End date must be on or after start date"
+    );
   }
-  next();
 });
 
 const Leave = mongoose.model("Leave", leaveSchema);
