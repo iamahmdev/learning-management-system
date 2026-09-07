@@ -1,0 +1,192 @@
+import { useState } from "react";
+import {
+  Mail,
+  ArrowRight,
+  GraduationCap,
+  ArrowLeft,
+  CheckCircle,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+
+const ForgotPassword = () => {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-fuchsia-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl lg:grid lg:grid-cols-2">
+
+        {/* Left Side */}
+        <div className="relative hidden overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 p-12 lg:flex lg:flex-col lg:justify-between">
+
+          {/* Decorative circles */}
+          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10" />
+          <div className="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-white/10" />
+
+          <div className="relative z-10">
+            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-lg">
+              <GraduationCap className="h-9 w-9 text-indigo-600" />
+            </div>
+
+            <h1 className="max-w-md text-5xl font-bold leading-tight text-white">
+              Forgot Your
+              <span className="block text-fuchsia-200">
+                Password?
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-md text-lg leading-8 text-indigo-100">
+              Don't worry. Enter your registered email address and
+              we'll help you get back into your School Portal account.
+            </p>
+          </div>
+
+          <div className="relative z-10">
+            <div className="rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md">
+              <p className="text-sm font-medium text-white">
+                Your account security is our priority.
+              </p>
+
+              <p className="mt-2 text-sm text-indigo-200">
+                School Management System
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side */}
+        <div className="flex items-center justify-center p-6 sm:p-10 lg:p-14">
+          <div className="w-full max-w-md">
+
+            {/* Mobile Logo */}
+            <div className="mb-8 flex items-center gap-3 lg:hidden">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-fuchsia-600">
+                <GraduationCap className="h-7 w-7 text-white" />
+              </div>
+
+              <div>
+                <h2 className="font-bold text-gray-900">
+                  School Portal
+                </h2>
+
+                <p className="text-xs text-gray-500">
+                  Management System
+                </p>
+              </div>
+            </div>
+
+            {!submitted ? (
+              <>
+                {/* Heading */}
+                <div className="mb-8">
+                  <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-indigo-600">
+                    Account Recovery
+                  </p>
+
+                  <h2 className="text-4xl font-bold text-gray-900">
+                    Forgot Password
+                  </h2>
+
+                  <p className="mt-3 text-gray-500">
+                    Enter your email and we'll send you a password
+                    reset link.
+                  </p>
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-5">
+
+                  {/* Email */}
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="mb-2 block text-sm font-semibold text-gray-700"
+                    >
+                      Email Address
+                    </label>
+
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+
+                      <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your registered email"
+                        required
+                        className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3.5 pl-12 pr-4 text-gray-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 py-3.5 font-semibold text-white shadow-lg shadow-indigo-200 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                  >
+                    Send Reset Link
+
+                    <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
+                </form>
+              </>
+            ) : (
+              /* Success Message */
+              <div className="text-center">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50">
+                  <CheckCircle className="h-10 w-10 text-green-500" />
+                </div>
+
+                <h2 className="text-3xl font-bold text-gray-900">
+                  Check Your Email
+                </h2>
+
+                <p className="mt-4 text-gray-500">
+                  If an account exists for{" "}
+                  <span className="font-semibold text-gray-700">
+                    {email}
+                  </span>
+                  , you'll receive a password reset link shortly.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setSubmitted(false)}
+                  className="mt-6 font-semibold text-indigo-600 transition hover:text-fuchsia-600"
+                >
+                  Try another email
+                </button>
+              </div>
+            )}
+
+            {/* Back to Login */}
+            <div className="mt-8 text-center">
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-indigo-600"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Sign In
+              </Link>
+            </div>
+
+            {/* Footer */}
+            <p className="mt-8 text-center text-xs text-gray-400">
+              © 2026 School Management System. All rights reserved.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ForgotPassword;
+
